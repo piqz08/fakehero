@@ -24,7 +24,7 @@ services:
       - 443:443
     environment:
       TZ: ${TIMEZONE}
-      DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
+      #DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
       RITSUANLARAVEL_DOMAIN: ${RITSUANLARAVEL_DOMAIN}
     links:
       - mysql:mysql
