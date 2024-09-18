@@ -15,12 +15,12 @@ mkdir -p /etc/nginx/ssl
 #     ) \
 #   -subj /CN=$DASHBOARD_DOMAIN
 
-# Update Nginx Config
-SSL_CONFIG="server_name DASHBOARD_DOMAIN;\nssl_certificate \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.cert;\nssl_certificate_key \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.key;\nssl_trusted_certificate \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.cert;"
-sed -i "s/server_name DASHBOARD_DOMAIN;/$SSL_CONFIG/g" /etc/nginx/conf.d/default.conf
-sed -i "s/80/443 ssl http2/g" /etc/nginx/conf.d/default.conf
-echo -e "# HTTP redirect\nserver {\nlisten 80;\nlisten [::]:80;\nserver_name DASHBOARD_DOMAIN;\n# letsencrypt support\ninclude /etc/nginx/letsencrypt.conf;\nreturn 301 https://\$host\$request_uri;\n}" >> /etc/nginx/conf.d/default.conf
-fi
+# # Update Nginx Config
+# SSL_CONFIG="server_name DASHBOARD_DOMAIN;\nssl_certificate \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.cert;\nssl_certificate_key \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.key;\nssl_trusted_certificate \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.cert;"
+# sed -i "s/server_name DASHBOARD_DOMAIN;/$SSL_CONFIG/g" /etc/nginx/conf.d/default.conf
+# sed -i "s/80/443 ssl http2/g" /etc/nginx/conf.d/default.conf
+# echo -e "# HTTP redirect\nserver {\nlisten 80;\nlisten [::]:80;\nserver_name DASHBOARD_DOMAIN;\n# letsencrypt support\ninclude /etc/nginx/letsencrypt.conf;\nreturn 301 https://\$host\$request_uri;\n}" >> /etc/nginx/conf.d/default.conf
+# fi
 
 # Create Self-signed SSL Cert for RITSUANLARAVEL_DOMAIN
 if [ "$GENERATE_SELF_SIGNED_SSL" -eq 1 ] && [ ! -z "$RITSUANLARAVEL_DOMAIN" ]
