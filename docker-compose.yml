@@ -15,6 +15,7 @@ services:
       dockerfile: "./docker/nginx/Dockerfile"
       args:
         - ENVIRONMENT=${ENVIRONMENT}
+        - DASHBOARD_DOMAIN=${DASHBOARD_DOMAIN}
         - RITSUANLARAVEL_DOMAIN=${RITSUANLARAVEL_DOMAIN}
         - GENERATE_SELF_SIGNED_SSL=${GENERATE_SELF_SIGNED_SSL}
     image: ${PROJECT_NAME}_nginx:${ENVIRONMENT}
@@ -24,14 +25,38 @@ services:
       - 443:443
     environment:
       TZ: ${TIMEZONE}
-      #DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
+      DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
       RITSUANLARAVEL_DOMAIN: ${RITSUANLARAVEL_DOMAIN}
     links:
       - mysql:mysql
+      - dashboard:dashboard
       - ritsuan-laravel:ritsuan-laravel
       - mailhog:mailhog
     volumes:
       - *services-volume
+  
+  # DASHBOARD service
+  dashboard:
+    build:
+      context: .
+      dockerfile: "./docker/php/dashboard/Dockerfile"
+      args:
+        - OPCACHE_VALIDATE_TIMESTAMPS=${OPCACHE_VALIDATE_TIMESTAMPS}
+        - ENABLE_XDEBUG=${ENABLE_XDEBUG}
+    image: ${PROJECT_NAME}_dashboard:${ENVIRONMENT}
+    container_name: ${PROJECT_NAME}_dashboard
+    volumes:
+      - *services-volume
+      - .git:/var/www/jtbdashboard/.git
+    working_dir: /var/www/jtbdashboard
+    ports:
+      - "9000:9000"
+    environment:
+      TZ: ${TIMEZONE}
+      XDEBUG_CONFIG: "remote_host=10.0.2.2"
+    links:
+      - mysql:mysql
+      - redis:redis
   
   # RITSUAN-LARAVEL service
   ritsuan-laravel:
