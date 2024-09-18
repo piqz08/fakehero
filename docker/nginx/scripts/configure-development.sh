@@ -1,19 +1,19 @@
 #!/bin/bash
 mkdir -p /etc/nginx/ssl
 
-# Create Self-signed SSL Cert for DASHBOARD_DOMAIN
-if [ "$GENERATE_SELF_SIGNED_SSL" -eq 1 ] && [ ! -z "$DASHBOARD_DOMAIN" ]
-then
-openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+# # Create Self-signed SSL Cert for DASHBOARD_DOMAIN
+# if [ "$GENERATE_SELF_SIGNED_SSL" -eq 1 ] && [ ! -z "$DASHBOARD_DOMAIN" ]
+# then
+# openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
 
-openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
-  -keyout /etc/nginx/ssl/$DASHBOARD_DOMAIN.key -out /etc/nginx/ssl/$DASHBOARD_DOMAIN.cert -extensions san -config \
-  <(echo "[req]";
-    echo distinguished_name=req;
-    echo "[san]";
-    echo subjectAltName=DNS:$DASHBOARD_DOMAIN,IP:10.0.0.1
-    ) \
-  -subj /CN=$DASHBOARD_DOMAIN
+# openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+#   -keyout /etc/nginx/ssl/$DASHBOARD_DOMAIN.key -out /etc/nginx/ssl/$DASHBOARD_DOMAIN.cert -extensions san -config \
+#   <(echo "[req]";
+#     echo distinguished_name=req;
+#     echo "[san]";
+#     echo subjectAltName=DNS:$DASHBOARD_DOMAIN,IP:10.0.0.1
+#     ) \
+#   -subj /CN=$DASHBOARD_DOMAIN
 
 # Update Nginx Config
 SSL_CONFIG="server_name DASHBOARD_DOMAIN;\nssl_certificate \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.cert;\nssl_certificate_key \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.key;\nssl_trusted_certificate \/etc\/nginx\/ssl\/DASHBOARD_DOMAIN.cert;"

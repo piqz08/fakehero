@@ -15,7 +15,6 @@ services:
       dockerfile: "./docker/nginx/Dockerfile"
       args:
         - ENVIRONMENT=${ENVIRONMENT}
-        - DASHBOARD_DOMAIN=${DASHBOARD_DOMAIN}
         - RITSUANLARAVEL_DOMAIN=${RITSUANLARAVEL_DOMAIN}
         - GENERATE_SELF_SIGNED_SSL=${GENERATE_SELF_SIGNED_SSL}
     image: ${PROJECT_NAME}_nginx:${ENVIRONMENT}
@@ -29,7 +28,6 @@ services:
       RITSUANLARAVEL_DOMAIN: ${RITSUANLARAVEL_DOMAIN}
     links:
       - mysql:mysql
-      - dashboard:dashboard
       - ritsuan-laravel:ritsuan-laravel
       - mailhog:mailhog
     volumes:
