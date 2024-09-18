@@ -4,8 +4,6 @@ RUN apk add --no-cache certbot certbot-nginx openssl bash
 RUN adduser -S www-data -G www-data
 ARG ENVIRONMENT
 ARG DASHBOARD_DOMAIN
-ARG EFORM_DOMAIN
-ARG RITSUAN_DOMAIN
 ARG RITSUANLARAVEL_DOMAIN
 ARG GENERATE_SELF_SIGNED_SSL
 RUN mkdir -p /var/www/_letsencrypt

@@ -16,8 +16,6 @@ services:
       args:
         - ENVIRONMENT=${ENVIRONMENT}
         - DASHBOARD_DOMAIN=${DASHBOARD_DOMAIN}
-        - EFORM_DOMAIN=${EFORM_DOMAIN}
-        - RITSUAN_DOMAIN=${RITSUAN_DOMAIN}
         - RITSUANLARAVEL_DOMAIN=${RITSUANLARAVEL_DOMAIN}
         - GENERATE_SELF_SIGNED_SSL=${GENERATE_SELF_SIGNED_SSL}
     image: ${PROJECT_NAME}_nginx:${ENVIRONMENT}
@@ -28,93 +26,20 @@ services:
     environment:
       TZ: ${TIMEZONE}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
-      EFORM_DOMAIN: ${EFORM_DOMAIN}
-      RITSUAN_DOMAIN: ${RITSUAN_DOMAIN}
       RITSUANLARAVEL_DOMAIN: ${RITSUANLARAVEL_DOMAIN}
     links:
       - mysql:mysql
       - dashboard:dashboard
-      - eform:eform
-      - ritsuan-system:ritsuan-system
       - ritsuan-laravel:ritsuan-laravel
       - mailhog:mailhog
     volumes:
       - *services-volume
-
-  # DASHBOARD service
-  dashboard:
-    build:
-      context: .
-      dockerfile: "./docker/dashboard/Dockerfile"
-      args:
-        - OPCACHE_VALIDATE_TIMESTAMPS=${OPCACHE_VALIDATE_TIMESTAMPS}
-        - ENABLE_XDEBUG=${ENABLE_XDEBUG}
-    image: ${PROJECT_NAME}_dashboard:${ENVIRONMENT}
-    container_name: ${PROJECT_NAME}_dashboard
-    volumes:
-      - *services-volume
-      - .git:/var/www/jtbdashboard/.git
-    working_dir: /var/www/jtbdashboard
-    ports:
-      - "9000:9000"
-    environment:
-      TZ: ${TIMEZONE}
-      XDEBUG_CONFIG: "remote_host=10.0.2.2"
-    links:
-      - mysql:mysql
-      - redis:redis
-
-  # EFORM service
-  eform:
-    build:
-      context: .
-      dockerfile: "./docker/eform/Dockerfile"
-      args:
-        - OPCACHE_VALIDATE_TIMESTAMPS=${OPCACHE_VALIDATE_TIMESTAMPS}
-        - ENABLE_XDEBUG=${ENABLE_XDEBUG}
-    image: ${PROJECT_NAME}_eform:${ENVIRONMENT}
-    container_name: ${PROJECT_NAME}_eform
-    volumes:
-      - *services-volume
-      - .git:/var/www/e-form/.git
-    working_dir: /var/www/e-form
-    ports:
-      - "9001:9001"
-    environment:
-      TZ: ${TIMEZONE}
-      XDEBUG_CONFIG: "remote_host=10.0.2.2"
-    links:
-      - mysql:mysql
-      - redis:redis
-
-  # RITSUAN-SYSTEM service
-  ritsuan-system:
-    build:
-      context: .
-      dockerfile: "./docker/ritsuan-system/Dockerfile"
-      args:
-        - OPCACHE_VALIDATE_TIMESTAMPS=${OPCACHE_VALIDATE_TIMESTAMPS}
-        - ENABLE_XDEBUG=${ENABLE_XDEBUG}
-    image: ${PROJECT_NAME}_ritsuan-system:${ENVIRONMENT}
-    container_name: ${PROJECT_NAME}_ritsuan-system
-    volumes:
-      - *services-volume
-      - .git:/var/www/ritsuan-system/.git
-    working_dir: /var/www/ritsuan-system
-    ports:
-      - "9002:9002"
-    environment:
-      TZ: ${TIMEZONE}
-      XDEBUG_CONFIG: "remote_host=10.0.2.2"
-    links:
-      - mysql:mysql
-      - redis:redis
   
   # RITSUAN-LARAVEL service
   ritsuan-laravel:
     build:
       context: .
-      dockerfile: "./docker/ritsuan-laravel/Dockerfile"
+      dockerfile: "./docker/php/ritsuan-laravel/Dockerfile"
       args:
         - OPCACHE_VALIDATE_TIMESTAMPS=${OPCACHE_VALIDATE_TIMESTAMPS}
         - ENABLE_XDEBUG=${ENABLE_XDEBUG}
@@ -125,7 +50,7 @@ services:
       - .git:/var/www/ritsuan-laravel/.git
     working_dir: /var/www/ritsuan-laravel
     ports:
-      - "9003:9003"
+      - "9002:9002"
     environment:
       TZ: ${TIMEZONE}
       XDEBUG_CONFIG: "remote_host=10.0.2.2"
@@ -165,7 +90,7 @@ services:
     container_name: ${PROJECT_NAME}_cron
     volumes:
       - *services-volume
-    working_dir: /var/www/jtbdashboard
+    working_dir: /var/www/ritsuan-laravel
     environment:
       TZ: ${TIMEZONE}
     links:

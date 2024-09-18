@@ -1,5 +1,5 @@
-# Use PHP 7.4 FPM Alpine image
-FROM php:7.4-fpm-alpine
+# Use PHP latest FPM Alpine image
+FROM php:8.1-fpm-alpine
 
 # Update PHP-FPM to listen on port 9001
 RUN sed -i 's/9000/9002/g' /usr/local/etc/php-fpm.d/www.conf && \
@@ -39,13 +39,13 @@ RUN mkdir -p /root/.cache/Cypress && chmod -R 777 /root/.cache/Cypress
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set up working directory
-WORKDIR /var/www/ritsuan-system
+WORKDIR /var/www/ritsuan-laravel
 
 # Copy application files
 COPY . .
 
 # Configure Git
-RUN git config --global --add safe.directory /var/www/ritsuan-system
+RUN git config --global --add safe.directory /var/www/ritsuan-laravel
 
 # Command to run the application
 CMD ["php-fpm"]
